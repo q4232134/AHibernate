@@ -2,7 +2,9 @@
 无复杂要求的超轻量级个人ORM框架
 次框架根据 lk_blog（ 博客:http://blog.csdn.net/lk_blog ）的AHibernate框架修改而成，主要解决了一些一直原框架遗留下来的问题。
 
-1.增加事物操作：使用BaseDaoImpl.runInTransaction(Task task)
+1.增加事物操作：
+
+    BaseDaoImpl.runInTransaction(Task task)
 
 2.增加表关联使用@Combine标记
 
@@ -18,10 +20,18 @@ start：
 
 创建继承与MyDBHelper的Helper类。
 
-初始化DaoManager：DaoManager.init(dbh)
+初始化DaoManager：
 
-注册dao：manager.registerDao(Dao.class）
+    DaoManager.init(dbh)
+
+注册dao：
+
+    manager.registerDao(Dao.class）
 
 之后就可以进行使用了。
 
-获取dao：daoManager.getDao(String tableName);获取daoManager.getDao(Object Model.class);
+获取dao：
+
+        daoManager.getDao(String tableName);
+        
+        daoManager.getDao(Object Model.class);
