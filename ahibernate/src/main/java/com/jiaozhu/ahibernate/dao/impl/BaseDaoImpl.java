@@ -23,7 +23,7 @@ import java.util.Map;
 
 /**
  * AHibernate
- * 框架原作者：lk_blog 博客:http://blog.csdn.net/lk_blog,
+ * 框架原作者：lk_blog 博客:http://blog.csdn.net/lk_blog
  */
 public class BaseDaoImpl<T> implements BaseDao<T> {
     private String TAG = "AHibernate";
@@ -40,6 +40,7 @@ public class BaseDaoImpl<T> implements BaseDao<T> {
         this.dbHelper = dbHelper;
         table = new TableModel(this.getSupportModel());
         this.tableName = table.getName();
+        if (table.getIdColumn() == null) throw new NullPointerException(tableName + "未找到对应主键!");
         this.idColumn = table.getIdColumn().getName();
     }
 
@@ -78,7 +79,7 @@ public class BaseDaoImpl<T> implements BaseDao<T> {
                 + " = '" + id + "'");
         List<T> list = find(null, selection, selectionArgs, null, null, null, null);
         if ((list != null) && (list.size() > 0)) {
-            return (T) list.get(0);
+            return list.get(0);
         }
         return null;
     }
@@ -448,15 +449,23 @@ public class BaseDaoImpl<T> implements BaseDao<T> {
             if ((type == TYPE_INCREMENT) && (model.isPrimary())) {
                 continue;
             }
-
-            if (Date.class == model.getField().getType()) {// 处理java.util.Date类型,update
+            Class fieldType = model.getField().getType();
+            if (Date.class == fieldType) {//处理时间类型
                 cv.put(model.getName(), ((Date) fieldValue).getTime());
+            } else if (Boolean.class == fieldType||boolean.class == fieldType) {//处理布尔类型
+                if (model.getType().equals(Type.TYPE_STRING)) {//是否以字符串形式保存
+                    cv.put(model.getName(), (boolean) fieldValue);
+                } else {
+                    if ((boolean) fieldValue) {
+                        cv.put(model.getName(), 1);
+                    } else {
+                        cv.put(model.getName(), 0);
+                    }
+                }
+            } else if (Blob.class == fieldType) {
+                cv.put(model.getName(), (byte[]) fieldValue);
             } else {
                 cv.put(model.getName(), String.valueOf(fieldValue));
-            }
-
-            if (Boolean.class == model.getField().getType()) {
-                cv.put(model.getName(), (boolean) fieldValue);
             }
 
             String value = String.valueOf(fieldValue);
@@ -639,12 +648,11 @@ public class BaseDaoImpl<T> implements BaseDao<T> {
         //为date类型
         if (Date.class == columnModel.getField().getType()) {
             value = "" + ((Date) fieldValue).getTime();
-        } else {
-            value = String.valueOf(fieldValue);
         }
         //为boolean类型
-        if (columnModel.getField().getType() == Boolean.class) {
-            if (columnModel.getType().equals(Type.TYPE_TEXT)) {
+        else if (columnModel.getField().getType() == Boolean.class
+                ||columnModel.getField().getType() == boolean.class) {
+            if (columnModel.getType().equals(Type.TYPE_STRING)) {
                 value = String.valueOf(fieldValue);
             } else {
                 if ((boolean) fieldValue) {
@@ -653,6 +661,8 @@ public class BaseDaoImpl<T> implements BaseDao<T> {
                     value = "0";
                 }
             }
+        } else {
+            value = String.valueOf(fieldValue);
         }
         return value;
     }

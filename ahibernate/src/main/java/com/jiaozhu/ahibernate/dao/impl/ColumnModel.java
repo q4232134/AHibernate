@@ -5,7 +5,9 @@ import com.jiaozhu.ahibernate.annotation.Id;
 
 import java.lang.reflect.Field;
 import java.sql.Blob;
+import java.util.Date;
 
+import static android.text.style.TtsSpan.TYPE_TEXT;
 import static com.jiaozhu.ahibernate.type.Type.*;
 
 /**
@@ -58,25 +60,28 @@ public class ColumnModel {
     private static String getColumnType(String type, Class<?> fieldType) {
         if (type != null && !type.equals("")) return type;
         if (String.class == fieldType) {
-            return TYPE_TEXT;
+            return TYPE_STRING;
         }
-        if ((Integer.TYPE == fieldType) || (Integer.class == fieldType)) {
+        if ((Integer.TYPE == fieldType) || (Integer.class == fieldType) || (int.class == fieldType)) {
             return TYPE_INTEGER;
         }
-        if ((Long.TYPE == fieldType) || (Long.class == fieldType)) {
-            return TYPE_BIGINT;
+        if ((Long.TYPE == fieldType) || (Long.class == fieldType) || (long.class == fieldType)) {
+            return TYPE_INTEGER;
         }
-        if ((Float.TYPE == fieldType) || (Float.class == fieldType)) {
+        if ((Float.TYPE == fieldType) || (Float.class == fieldType) || (float.class == fieldType)) {
             return TYPE_FLOAT;
         }
-        if ((Short.TYPE == fieldType) || (Short.class == fieldType)) {
-            return TYPE_INT;
+        if ((Short.TYPE == fieldType) || (Short.class == fieldType) || (short.class == fieldType)) {
+            return TYPE_INTEGER;
         }
-        if ((Double.TYPE == fieldType) || (Double.class == fieldType)) {
-            return TYPE_DOUBLE;
+        if ((Double.TYPE == fieldType) || (Double.class == fieldType) || (double.class == fieldType)) {
+            return TYPE_FLOAT;
         }
-        if ((Boolean.TYPE == fieldType) || (Boolean.class == fieldType)) {
-            return TYPE_INT;
+        if ((Boolean.TYPE == fieldType) || (Boolean.class == fieldType) || (boolean.class == fieldType)) {
+            return TYPE_INTEGER;
+        }
+        if (Date.class == fieldType) {
+            return TYPE_INTEGER;
         }
         if (Blob.class == fieldType) {
             return TYPE_BLOB;

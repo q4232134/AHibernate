@@ -5,11 +5,28 @@ package com.jiaozhu.ahibernate.type;
  */
 
 public class Type {
-    public static final String TYPE_TEXT = "TEXT";
+    /**
+     * 字符串类型
+     */
+    public static final String TYPE_STRING = "TEXT";
+
+    /**
+     * 整数类型
+     */
     public static final String TYPE_INTEGER = "INTEGER";
-    public static final String TYPE_BIGINT = "BIGINT";
+
+    /**
+     * 布尔值类型
+     */
+    public static final String TYPE_BOOLEAN = "INT";
+
+    /**
+     * 浮点型
+     */
     public static final String TYPE_FLOAT = "FLOAT";
-    public static final String TYPE_INT = "INT";
-    public static final String TYPE_DOUBLE = "DOUBLE";
+
+    /**
+     * 二进制类型
+     */
     public static final String TYPE_BLOB = "BLOB";
 }
