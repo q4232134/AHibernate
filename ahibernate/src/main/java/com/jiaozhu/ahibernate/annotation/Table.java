@@ -22,7 +22,7 @@ public @interface Table {
     boolean createTable() default true;
 
     /**
-     * 是否创建实体表
+     * 需要绑定的主表
      *
      * @return
      */
