@@ -26,8 +26,8 @@ dependencies {
 }
 
 publish {
-    userOrg = 'jiaozhu'
-    groupId = 'com.jiaozhu'
+    userOrg = 'q4232134'
+    groupId = 'com.jiaozhu.android'
     artifactId = 'ahibernate'
     publishVersion = '0.9.0'
     desc = ''
