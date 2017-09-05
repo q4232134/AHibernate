@@ -23,7 +23,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         dbh = new DBHelper(this);
         manager = DaoManager.init(dbh);
         manager.registerDao(Dao.class, ChildDao.class);
-        dao = (Dao) manager.getDao(Model.class);
+        dao = (Dao) manager.getDaoByTable(Model.class);
         btn1 = (Button) findViewById(R.id.btn1);
         btn2 = (Button) findViewById(R.id.btn2);
         btn3 = (Button) findViewById(R.id.btn3);
@@ -48,11 +48,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             child.string1 = m.id + "";
             child.integer1 = 3;
             child.aBoolean = false;
-            manager.getDao(Child.class).insert(child);
+            manager.getDao(ChildDao.class).insert(child);
         } else if (v == btn2) {
             Model model = dao.get(1);
             System.out.println(model);
-            System.out.println(manager.getDao(Child.class).findCombines(model));
+            System.out.println(manager.getDao(ChildDao.class).findCombines(model));
         } else if (v == btn3) {
             dao.getModel();
         } else if (v == btn4) {
