@@ -84,9 +84,9 @@ public class BaseDaoImpl<T> implements BaseDao<T> {
         return null;
     }
 
-    public List<T> rawQuery(String sql, String[] selectionArgs) {
+    public ArrayList<T> rawQuery(String sql, String[] selectionArgs) {
         Log.d(TAG, "[rawQuery]: " + getLogSql(sql, selectionArgs));
-        List<T> list = new ArrayList<T>();
+        ArrayList<T> list = new ArrayList<T>();
         SQLiteDatabase db = null;
         Cursor cursor = null;
         try {
@@ -132,14 +132,14 @@ public class BaseDaoImpl<T> implements BaseDao<T> {
         return false;
     }
 
-    public List<T> find() {
+    public ArrayList<T> find() {
         return find(null, null, null, null, null, null, null);
     }
 
-    public List<T> find(String[] columns, String selection, String[] selectionArgs, String groupBy,
-                        String having, String orderBy, String limit) {
+    public ArrayList<T> find(String[] columns, String selection, String[] selectionArgs, String groupBy,
+                             String having, String orderBy, String limit) {
         Log.d(TAG, "[find]");
-        List<T> list = new ArrayList<T>();
+        ArrayList<T> list = new ArrayList<T>();
         SQLiteDatabase db = null;
         Cursor cursor = null;
         try {
@@ -200,7 +200,7 @@ public class BaseDaoImpl<T> implements BaseDao<T> {
     public boolean replace(List<T> list, @Nullable ProgressListener listener) {
         SQLiteDatabase db = null;
         String sql = "";
-        long finishNum = 0;
+        int finishNum = 0;
         try {
             db = this.dbHelper.getWritableDatabase();
             db.beginTransaction();
@@ -297,6 +297,7 @@ public class BaseDaoImpl<T> implements BaseDao<T> {
      * @return
      */
     public boolean delete(String... ids) {
+        if (ids.length == 0) return true;
         StringBuffer sb = new StringBuffer();
         for (String id : ids) {
             sb = sb.append(idColumn).append(" = ").append(id).append(" or ");
@@ -305,6 +306,11 @@ public class BaseDaoImpl<T> implements BaseDao<T> {
             sb.delete(sb.length() - 4, sb.length() - 1);
         String sql = "delete from " + this.tableName + " where " + sb;
         return execSql(sql, null);
+    }
+
+
+    public boolean delete(List<String> ids) {
+        return delete(ids.toArray(new String[ids.size()]));
     }
 
 
@@ -452,7 +458,7 @@ public class BaseDaoImpl<T> implements BaseDao<T> {
             Class fieldType = model.getField().getType();
             if (Date.class == fieldType) {//处理时间类型
                 cv.put(model.getName(), ((Date) fieldValue).getTime());
-            } else if (Boolean.class == fieldType||boolean.class == fieldType) {//处理布尔类型
+            } else if (Boolean.class == fieldType || boolean.class == fieldType) {//处理布尔类型
                 if (model.getType().equals(Type.TYPE_STRING)) {//是否以字符串形式保存
                     cv.put(model.getName(), (boolean) fieldValue);
                 } else {
@@ -492,11 +498,11 @@ public class BaseDaoImpl<T> implements BaseDao<T> {
      * @param selectionArgs 参数值
      * @return 返回的Map中的key全部是小写形式.
      */
-    public List<Map<String, String>> query2MapList(String sql, String[] selectionArgs) {
+    public ArrayList<Map<String, String>> query2MapList(String sql, String[] selectionArgs) {
         Log.d(TAG, "[query2MapList]: " + getLogSql(sql, selectionArgs));
         SQLiteDatabase db = null;
         Cursor cursor = null;
-        List<Map<String, String>> retList = new ArrayList<Map<String, String>>();
+        ArrayList<Map<String, String>> retList = new ArrayList<Map<String, String>>();
         try {
             db = this.dbHelper.getReadableDatabase();
             cursor = db.rawQuery(sql, selectionArgs);
@@ -582,16 +588,19 @@ public class BaseDaoImpl<T> implements BaseDao<T> {
      * 在事务中运行指定任务
      *
      * @param task
+     * @return 运行是否成功
      */
-    public void runInTransaction(Task task) {
-        SQLiteDatabase db = dbHelper.getReadableDatabase();
+    public boolean runInTransaction(Task task) {
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
         db.beginTransaction();
         try {
             task.execute();
             db.setTransactionSuccessful();
+            return true;
         } catch (Exception e) {
             Log.e(TAG, "[execTransaction] exception.");
             e.printStackTrace();
+            return false;
         } finally {
             db.endTransaction();
         }
@@ -604,7 +613,7 @@ public class BaseDaoImpl<T> implements BaseDao<T> {
      * @param <G>
      * @return
      */
-    public <G> List<T> findCombines(G entity) {
+    public <G> ArrayList<T> findCombines(G entity) {
         String tableName = TableHelper.getTableNameByClass(entity.getClass());
         if (!tableName.equals(table.getParentTableName())) {
             Log.e(TAG, "传入model与父表类型不符合");
@@ -651,7 +660,7 @@ public class BaseDaoImpl<T> implements BaseDao<T> {
         }
         //为boolean类型
         else if (columnModel.getField().getType() == Boolean.class
-                ||columnModel.getField().getType() == boolean.class) {
+                || columnModel.getField().getType() == boolean.class) {
             if (columnModel.getType().equals(Type.TYPE_STRING)) {
                 value = String.valueOf(fieldValue);
             } else {

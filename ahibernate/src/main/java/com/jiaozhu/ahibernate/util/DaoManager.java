@@ -70,10 +70,9 @@ public class DaoManager {
      * 根据dao类获取dao对象
      * @param clazz 对应的dao
      * @param <T>
-     * @param <G>
      * @return
      */
-    public <T extends BaseDaoImpl<G>, G> T getDao(Class<T> clazz) {
+    public <T extends BaseDaoImpl> T getDao(Class<T> clazz) {
         Class model = ((Class<T>) ((java.lang.reflect.ParameterizedType) clazz
                 .getGenericSuperclass()).getActualTypeArguments()[0]);
         String name = TableHelper.getTableNameByClass(model);

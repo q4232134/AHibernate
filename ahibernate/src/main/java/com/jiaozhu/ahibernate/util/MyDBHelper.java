@@ -19,5 +19,9 @@ public class MyDBHelper extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
     }
 
+    public void dropAllTables(SQLiteDatabase db){
+        TableHelper.dropTable(db, DaoManager.getInstance().getTableNameList().toArray(new String[0]));
+    }
+
 
 }

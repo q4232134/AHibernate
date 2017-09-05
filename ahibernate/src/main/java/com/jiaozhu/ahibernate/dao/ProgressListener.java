@@ -10,5 +10,5 @@ public interface ProgressListener {
      * @param finished 已完成数量
      * @param total    总共数量
      */
-    void onProgress(long finished, long total);
+    void onProgress(int finished, int total);
 }
