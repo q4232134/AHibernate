@@ -12,15 +12,21 @@ public class MyDBHelper extends SQLiteOpenHelper {
         super(context, databaseName, factory, databaseVersion);
     }
 
+    @Override
     public void onCreate(SQLiteDatabase db) {
         TableHelper.createTable(db, DaoManager.getInstance().getTableNameList().toArray(new String[0]));
     }
 
+
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
     }
 
-    public void dropAllTables(SQLiteDatabase db){
-        TableHelper.dropTable(db, DaoManager.getInstance().getTableNameList().toArray(new String[0]));
+    public void createAllTables() {
+        TableHelper.createTable(getWritableDatabase(), DaoManager.getInstance().getTableNameList().toArray(new String[0]));
+    }
+
+    public void dropAllTables() {
+        TableHelper.dropTable(getWritableDatabase(), DaoManager.getInstance().getTableNameList().toArray(new String[0]));
     }
 
 

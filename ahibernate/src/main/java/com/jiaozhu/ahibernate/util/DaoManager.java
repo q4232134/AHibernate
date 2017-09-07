@@ -42,6 +42,14 @@ public class DaoManager {
         return daoManager;
     }
 
+    public SQLiteOpenHelper getDbHelper() {
+        return dbHelper;
+    }
+
+    public void setDbHelper(SQLiteOpenHelper dbHelper) {
+        this.dbHelper = dbHelper;
+    }
+
     /**
      * 获取dao
      *

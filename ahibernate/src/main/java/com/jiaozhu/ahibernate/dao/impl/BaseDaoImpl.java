@@ -4,7 +4,6 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.support.annotation.Nullable;
 
 import com.jiaozhu.ahibernate.dao.BaseDao;
 import com.jiaozhu.ahibernate.dao.ProgressListener;
@@ -13,6 +12,8 @@ import com.jiaozhu.ahibernate.type.Type;
 import com.jiaozhu.ahibernate.util.DaoManager;
 import com.jiaozhu.ahibernate.util.Log;
 import com.jiaozhu.ahibernate.util.TableHelper;
+
+import org.jetbrains.annotations.Nullable;
 
 import java.sql.Blob;
 import java.util.ArrayList;
