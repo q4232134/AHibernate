@@ -1,6 +1,21 @@
 # AHibernate
 无复杂要求的超轻量级个人ORM框架
-次框架根据 lk_blog（ 博客:http://blog.csdn.net/lk_blog ）的AHibernate框架修改而成，主要解决了一些一直原框架遗留下来的问题。
+次框架根据 lk_blog（ 博客:http://blog.csdn.net/lk_blog ）的AHibernate框架修改而成，主要解决了一些原框架遗留下来的问题。
+
+如何加入项目：
+
+    buildscript {
+        repositories {
+            jcenter()
+        }
+        dependencies {
+            compile 'com.jiaozhu.android:ahibernate:xxx'
+        }
+    }
+
+xxx为最新版本，暂时最新版本为0.9.2
+
+主要功能：
 
 1.增加事物操作：
 
