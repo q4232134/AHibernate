@@ -8,6 +8,8 @@ import android.widget.Button;
 import com.jiaozhu.ahibernate.util.DaoManager;
 
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
@@ -40,23 +42,23 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (v == btn1) {
             Model m = new Model();
             m.double1 = 3.0;
+            m.string1="123";
             m.aBoolean = true;
             m.date1 = new Date();
             dao.replace(m);
-
-            Child child = new Child();
-            child.string1 = m.id + "";
-            child.integer1 = 3;
-            child.aBoolean = false;
-            manager.getDao(ChildDao.class).insert(child);
+            System.out.println(dao.get(1));
         } else if (v == btn2) {
             Model model = dao.get(1);
+            model.string1="311";
+            model.aBoolean = false;
+            model.double1 = 66;
+            Set s = new HashSet();
+            s.add("double1");
+            dao.update(model, s);
             System.out.println(model);
-            System.out.println(manager.getDao(ChildDao.class).findCombines(model));
         } else if (v == btn3) {
-            dao.getModel();
+            System.out.println(dao.get(1));
         } else if (v == btn4) {
-            dbh.onUpgrade();
         }
     }
 }

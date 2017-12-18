@@ -21,6 +21,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * AHibernate
@@ -315,12 +316,17 @@ public class BaseDaoImpl<T> implements BaseDao<T> {
     }
 
 
+    @Override
     public boolean update(T entity) {
+        return update(entity, null);
+    }
+
+    public boolean update(T entity, @Nullable Set<String> needUpdate) {
         SQLiteDatabase db = null;
         try {
             db = this.dbHelper.getWritableDatabase();
             db.beginTransaction();
-            updateEntity(db, entity);
+            updateEntity(db, entity, needUpdate);
             db.setTransactionSuccessful();
             return true;
         } catch (Exception e) {
@@ -335,17 +341,21 @@ public class BaseDaoImpl<T> implements BaseDao<T> {
 
     @Override
     public boolean update(List<T> list) {
-        return update(list, null);
+        return update(list, null, null);
     }
 
-    public boolean update(List<T> list, @Nullable ProgressListener listener) {
+    public boolean update(List<T> list, @Nullable Set<String> needUpdate) {
+        return update(list, needUpdate, null);
+    }
+
+    public boolean update(List<T> list, @Nullable Set<String> needUpdate, @Nullable ProgressListener listener) {
         SQLiteDatabase db = null;
         try {
             db = this.dbHelper.getWritableDatabase();
             db.beginTransaction();
             int i = 0;
             for (T entity : list) {
-                updateEntity(db, entity);
+                updateEntity(db, entity, needUpdate);
                 if (listener != null)
                     listener.onProgress(++i, list.size());
             }
@@ -368,9 +378,15 @@ public class BaseDaoImpl<T> implements BaseDao<T> {
      * @param entity
      * @throws IllegalAccessException
      */
-    private void updateEntity(SQLiteDatabase db, T entity) throws IllegalAccessException {
+    /**
+     * @param db
+     * @param entity
+     * @param needUpdate
+     * @throws IllegalAccessException
+     */
+    private void updateEntity(SQLiteDatabase db, T entity, @Nullable Set<String> needUpdate) throws IllegalAccessException {
         ContentValues cv = new ContentValues();
-        String sql = setContentValues(entity, cv, TYPE_NOT_INCREMENT, METHOD_UPDATE);
+        String sql = setContentValues(entity, cv, TYPE_NOT_INCREMENT, METHOD_UPDATE, needUpdate);
         String where = this.idColumn + " = ?";
         // int id = Integer.parseInt(cv.get(this.idColumn).toString());
         String id = cv.get(this.idColumn).toString();
@@ -440,7 +456,11 @@ public class BaseDaoImpl<T> implements BaseDao<T> {
     }
 
 
-    private String setContentValues(T entity, ContentValues cv, int type, int method)
+    private String setContentValues(T entity, ContentValues cv, int type, int method) throws IllegalAccessException {
+        return setContentValues(entity, cv, type, method, null);
+    }
+
+    private String setContentValues(T entity, ContentValues cv, int type, int method, @Nullable Set<String> needUpdate)
             throws IllegalAccessException {
         //TODO
         StringBuffer strField = new StringBuffer("(");
@@ -448,6 +468,9 @@ public class BaseDaoImpl<T> implements BaseDao<T> {
         StringBuffer strUpdate = new StringBuffer(" ");
         for (ColumnModel model : table.getColumns()) {
             Object fieldValue = model.getField().get(entity);
+            //不包含在set中且不是主键则跳过
+            if (method == METHOD_UPDATE && needUpdate != null && !needUpdate.contains(model.getName()) && !model.getName().equals(idColumn))
+                continue;
             if (fieldValue == null) {
                 String s = null;
                 cv.put(model.getName(), s);
