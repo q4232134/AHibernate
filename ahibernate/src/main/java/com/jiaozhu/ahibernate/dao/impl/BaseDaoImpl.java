@@ -13,7 +13,6 @@ import com.jiaozhu.ahibernate.util.DaoManager;
 import com.jiaozhu.ahibernate.util.Log;
 import com.jiaozhu.ahibernate.util.TableHelper;
 
-import org.jetbrains.annotations.Nullable;
 
 import java.sql.Blob;
 import java.util.ArrayList;
@@ -196,10 +195,11 @@ public class BaseDaoImpl<T> implements BaseDao<T> {
     /**
      * 批量替换（采用事务方式提交操作）
      *
-     * @param list 需要提交的列表
-     * @return 提交是否成功
+     * @param list     需要提交的列表
+     * @param listener Nullable 过程监听
+     * @return
      */
-    public boolean replace(List<T> list, @Nullable ProgressListener listener) {
+    public boolean replace(List<T> list, ProgressListener listener) {
         SQLiteDatabase db = null;
         String sql = "";
         int finishNum = 0;
@@ -321,7 +321,7 @@ public class BaseDaoImpl<T> implements BaseDao<T> {
         return update(entity, null);
     }
 
-    public boolean update(T entity, @Nullable Set<String> needUpdate) {
+    public boolean update(T entity, Set<String> needUpdate) {
         SQLiteDatabase db = null;
         try {
             db = this.dbHelper.getWritableDatabase();
@@ -344,11 +344,11 @@ public class BaseDaoImpl<T> implements BaseDao<T> {
         return update(list, null, null);
     }
 
-    public boolean update(List<T> list, @Nullable Set<String> needUpdate) {
+    public boolean update(List<T> list, Set<String> needUpdate) {
         return update(list, needUpdate, null);
     }
 
-    public boolean update(List<T> list, @Nullable Set<String> needUpdate, @Nullable ProgressListener listener) {
+    public boolean update(List<T> list, Set<String> needUpdate, ProgressListener listener) {
         SQLiteDatabase db = null;
         try {
             db = this.dbHelper.getWritableDatabase();
@@ -376,15 +376,10 @@ public class BaseDaoImpl<T> implements BaseDao<T> {
      *
      * @param db
      * @param entity
+     * @param needUpdate Nullable
      * @throws IllegalAccessException
      */
-    /**
-     * @param db
-     * @param entity
-     * @param needUpdate
-     * @throws IllegalAccessException
-     */
-    private void updateEntity(SQLiteDatabase db, T entity, @Nullable Set<String> needUpdate) throws IllegalAccessException {
+    private void updateEntity(SQLiteDatabase db, T entity, Set<String> needUpdate) throws IllegalAccessException {
         ContentValues cv = new ContentValues();
         String sql = setContentValues(entity, cv, TYPE_NOT_INCREMENT, METHOD_UPDATE, needUpdate);
         String where = this.idColumn + " = ?";
@@ -460,7 +455,7 @@ public class BaseDaoImpl<T> implements BaseDao<T> {
         return setContentValues(entity, cv, type, method, null);
     }
 
-    private String setContentValues(T entity, ContentValues cv, int type, int method, @Nullable Set<String> needUpdate)
+    private String setContentValues(T entity, ContentValues cv, int type, int method, Set<String> needUpdate)
             throws IllegalAccessException {
         //TODO
         StringBuffer strField = new StringBuffer("(");

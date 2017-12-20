@@ -16,6 +16,7 @@ buildscript {
 allprojects {
     repositories {
         jcenter()
+        google()
     }
     //忽略"编码GBK的不可映射字符"
     tasks.withType(Javadoc) {
