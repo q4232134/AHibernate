@@ -9,11 +9,18 @@
             jcenter()
         }
         dependencies {
-            compile 'com.jiaozhu.android:ahibernate:xxx'
+            compile 'com.jiaozhu.android:ahibernate:0.9.4'
         }
     }
 
-xxx为最新版本，暂时最新版本为0.9.2
+xxx为最新版本，暂时最新版本为0.9.4
+
+功能更新：
+
+修复了引入包冲突的问题
+
+增加了选择性update功能，update增加参数set<String>用于填写需要进行修改的参数
+
 
 主要功能：
 
