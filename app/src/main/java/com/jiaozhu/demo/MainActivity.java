@@ -24,7 +24,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
         dbh = new DBHelper(this);
         manager = DaoManager.init(dbh);
-        manager.registerDao(Dao.class, ChildDao.class);
+        manager.registerDao(Dao.class, ChildDao.class, Model.class);
         dao = (Dao) manager.getDaoByTable(Model.class);
         btn1 = (Button) findViewById(R.id.btn1);
         btn2 = (Button) findViewById(R.id.btn2);
@@ -42,14 +42,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (v == btn1) {
             Model m = new Model();
             m.double1 = 3.0;
-            m.string1="123";
+            m.string1 = "123";
             m.aBoolean = true;
             m.date1 = new Date();
             dao.replace(m);
             System.out.println(dao.get(1));
         } else if (v == btn2) {
             Model model = dao.get(1);
-            model.string1="311";
+            model.string1 = "311";
             model.aBoolean = false;
             model.double1 = 66;
             Set s = new HashSet();
